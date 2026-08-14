@@ -3,8 +3,17 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    env_file:
-      - .env
+    environment:
+      NEIS_API_KEY: ${NEIS_API_KEY:-sample}
+      NEIS_BASE_URL: ${NEIS_BASE_URL:-https://open.neis.go.kr}
+      BACKEND_PORT: ${BACKEND_PORT:-8000}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:4173}
+      SCHOOL_PAGE_SIZE: ${SCHOOL_PAGE_SIZE:-100}
+      SCHOOL_RESULT_LIMIT: ${SCHOOL_RESULT_LIMIT:-100}
+      MEAL_MAX_RANGE_DAYS: ${MEAL_MAX_RANGE_DAYS:-31}
+      NEIS_CONNECT_TIMEOUT: ${NEIS_CONNECT_TIMEOUT:-3}
+      NEIS_READ_TIMEOUT: ${NEIS_READ_TIMEOUT:-10}
+      NEIS_MAX_RETRIES: ${NEIS_MAX_RETRIES:-2}
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     healthcheck:
@@ -24,3 +33,20 @@ services:
         condition: service_healthy
     ports:
       - "${FRONTEND_PORT:-4173}:4173"
+
+  mcp:
+    build:
+      context: .
+      dockerfile: src/mcp/Dockerfile
+    environment:
+      NEIS_API_KEY: ${NEIS_API_KEY:-sample}
+      NEIS_BASE_URL: ${NEIS_BASE_URL:-https://open.neis.go.kr}
+      MCP_PORT: ${MCP_PORT:-8080}
+      SCHOOL_PAGE_SIZE: ${SCHOOL_PAGE_SIZE:-100}
+      SCHOOL_RESULT_LIMIT: ${SCHOOL_RESULT_LIMIT:-100}
+      MEAL_MAX_RANGE_DAYS: ${MEAL_MAX_RANGE_DAYS:-31}
+      NEIS_CONNECT_TIMEOUT: ${NEIS_CONNECT_TIMEOUT:-3}
+      NEIS_READ_TIMEOUT: ${NEIS_READ_TIMEOUT:-10}
+      NEIS_MAX_RETRIES: ${NEIS_MAX_RETRIES:-2}
+    ports:
+      - "${MCP_PORT:-8080}:8080"
