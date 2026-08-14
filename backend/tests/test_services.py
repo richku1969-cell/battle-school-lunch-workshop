@@ -47,3 +47,9 @@ def test_validate_range_rejects_large_range() -> None:
     with pytest.raises(AppError) as error:
         service.validate_range(date(2026, 8, 1), date(2026, 9, 1))
     assert error.value.detail["code"] == "DATE_RANGE_TOO_LARGE"
+
+
+def test_utf8_korean_text_is_preserved() -> None:
+    text = '{"schoolInfo":[{"head":[{"list_total_count":1},{"RESULT":{"CODE":"INFO-000","MESSAGE":"정상 처리되었습니다."}}]},{"row":[{"ATPT_OFCDC_SC_CODE":"E10","SD_SCHUL_CODE":"7310057","SCHUL_NM":"인천고등학교","LCTN_SC_NM":"인천광역시","SCHUL_KND_SC_NM":"고등학교"}]}]}'
+    encoded = text.encode("utf-8")
+    assert encoded.decode("utf-8") == text

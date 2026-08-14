@@ -43,6 +43,7 @@ class NeisClient:
         if response.status_code >= 400:
             raise neis_invalid_response_error()
 
+        response.encoding = "utf-8"
         payload = response.json()
         if not isinstance(payload, dict):
             raise neis_invalid_response_error()
