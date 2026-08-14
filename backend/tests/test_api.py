@@ -1,4 +1,7 @@
+import os
 from datetime import date
+
+os.environ.setdefault("NEIS_API_KEY", "test-api-key")
 
 from fastapi.testclient import TestClient
 

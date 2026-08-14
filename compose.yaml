@@ -5,6 +5,8 @@ services:
       dockerfile: backend/Dockerfile
     env_file:
       - .env
+    environment:
+      NEIS_API_KEY: ${NEIS_API_KEY:-sample}
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     healthcheck:
