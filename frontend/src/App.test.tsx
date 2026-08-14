@@ -52,8 +52,8 @@ describe('App', () => {
               menu: [{ name: '카레라이스', allergyCodes: ['2'] }],
               calories: { label: '열량', value: 531.2, unit: 'kcal', sourceText: '열량 : 531.2 kcal' },
               nutrients: [],
-              nutritionText: '열량 : 531.2 kcal',
-              origin: '쌀: 국내산',
+              nutritionText: '탄수화물 : 30.5 g<br/>단백질 : 10.2 g',
+              origin: '쌀 : 국내산<br/>배추 : 국내산<br/>비고 : ',
             },
           ],
         }),
@@ -69,7 +69,10 @@ describe('App', () => {
     fireEvent.click(screen.getByRole('button', { name: '급식 조회' }));
 
     await screen.findByText(/카레라이스/);
-    expect(screen.getByText('열량: 열량 : 531.2 kcal')).toBeInTheDocument();
+    expect(screen.getByText('열량 : 531.2 kcal')).toBeInTheDocument();
+    expect(screen.getByText('탄수화물 : 30.5 g')).toBeInTheDocument();
+    expect(screen.getByText('쌀 : 국내산')).toBeInTheDocument();
+    expect(screen.queryByText('비고 :')).not.toBeInTheDocument();
   });
 
   it('blocks invalid date ranges', async () => {

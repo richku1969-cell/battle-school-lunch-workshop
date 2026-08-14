@@ -86,6 +86,29 @@ const useStyles = makeStyles({
     display: 'grid',
     gap: '16px',
   },
+  mealMetaSection: {
+    display: 'grid',
+    gap: '8px',
+    marginTop: '12px',
+  },
+  metaCard: {
+    display: 'grid',
+    gap: '6px',
+    padding: '12px',
+    borderRadius: tokens.borderRadiusLarge,
+    backgroundColor: 'rgba(255,255,255,0.72)',
+    border: '1px solid rgba(15, 23, 42, 0.08)',
+  },
+  metaList: {
+    margin: 0,
+    paddingLeft: '20px',
+    display: 'grid',
+    gap: '4px',
+  },
+  sourceText: {
+    wordBreak: 'break-word',
+    whiteSpace: 'pre-wrap',
+  },
   menuList: {
     margin: 0,
     paddingLeft: '20px',
@@ -104,6 +127,16 @@ const MAX_RANGE_DAYS = 31;
 function formatDate(value: string): string {
   const date = new Date(`${value}T00:00:00+09:00`);
   return new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' }).format(date);
+}
+
+function splitNeisLines(value: string | undefined): string[] {
+  if (!value) {
+    return [];
+  }
+  return value
+    .split('<br/>')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && line !== '비고 :');
 }
 
 export function App() {
@@ -291,9 +324,38 @@ export function App() {
                     </li>
                   ))}
                 </ul>
-                {meal.calories && <Text>열량: {meal.calories.sourceText}</Text>}
-                {meal.nutritionText && <Text>영양 정보: {meal.nutritionText}</Text>}
-                {meal.origin && <Text>원산지: {meal.origin}</Text>}
+                <div className={styles.mealMetaSection}>
+                  {meal.calories && (
+                    <div className={styles.metaCard}>
+                      <Text weight="semibold">열량</Text>
+                      <Text>{meal.calories.sourceText}</Text>
+                    </div>
+                  )}
+                  {meal.nutritionText && (
+                    <div className={styles.metaCard}>
+                      <Text weight="semibold">영양 정보</Text>
+                      {splitNeisLines(meal.nutritionText).length > 0 ? (
+                        <ul className={styles.metaList}>
+                          {splitNeisLines(meal.nutritionText).map((line) => (
+                            <li key={`${meal.date}-nutrition-${line}`}>{line}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <Text className={styles.sourceText}>{meal.nutritionText}</Text>
+                      )}
+                    </div>
+                  )}
+                  {meal.origin && (
+                    <div className={styles.metaCard}>
+                      <Text weight="semibold">원산지</Text>
+                      <ul className={styles.metaList}>
+                        {splitNeisLines(meal.origin).map((line) => (
+                          <li key={`${meal.date}-origin-${line}`}>{line}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
                 <Text>알레르기 정보는 참고용이며, 섭취 전 학교 안내를 다시 확인해 주세요.</Text>
               </Card>
             ))}
